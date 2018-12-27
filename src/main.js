@@ -1,8 +1,6 @@
 import Vue from "vue";
-import App from "./App.vue";
+import StreamSwitch from "./components/StreamSwitch";
 
-Vue.config.productionTip = false;
+let MainComponent = Vue.extend(StreamSwitch);
 
-new Vue({
-  render: h => h(App)
-}).$mount("#app");
+new MainComponent().$mount("#app");
