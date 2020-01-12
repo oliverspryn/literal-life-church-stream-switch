@@ -1,3 +1,4 @@
+var options = null;
 var player = null;
 
 var audioUrl = '';
@@ -5,6 +6,10 @@ var videoUrl = '';
 
 Vue.component('stream-switch', {
     props: {
+        applicationInsightsInstrumentationKey: {
+            default: '',
+            type: String
+        },
         autoplay: {
             default: true,
             type: Boolean
@@ -76,6 +81,10 @@ Vue.component('stream-switch', {
 
     methods: {
         selectedAudio: function() {
+            if (this.applicationInsightsInstrumentationKey != '') {
+                options.plugins.appInsights.streamId = this.azureAudioChannelName.toLowerCase();
+            }
+
             player.src([{
                 src: audioUrl,
                 type: 'application/vnd.ms-sstr+xml'
@@ -86,6 +95,10 @@ Vue.component('stream-switch', {
         },
 
         selectedVideo: function() {
+            if (this.applicationInsightsInstrumentationKey != '') {
+                options.plugins.appInsights.streamId = this.azureVideoChannelName.toLowerCase();
+            }
+
             player.src([{
                 src: videoUrl,
                 type: 'application/vnd.ms-sstr+xml'
@@ -97,13 +110,27 @@ Vue.component('stream-switch', {
     },
 
     mounted: function () {
+
+        // region Azure Application Insights
+        // Source: https://docs.microsoft.com/en-us/azure/azure-monitor/app/website-monitoring#configure-app-insights-sdk
+
+        if (this.applicationInsightsInstrumentationKey != '') {
+            var sdkInstance="appInsightsSDK";window[sdkInstance]="appInsights";var aiName=window[sdkInstance],aisdk=window[aiName]||function(e){function n(e){t[e]=function(){var n=arguments;t.queue.push(function(){t[e].apply(t,n)})}}var t={config:e};t.initialize=!0;var i=document,a=window;setTimeout(function(){var n=i.createElement("script");n.src=e.url||"https://az416426.vo.msecnd.net/scripts/b/ai.2.min.js",i.getElementsByTagName("script")[0].parentNode.appendChild(n)});try{t.cookie=i.cookie}catch(e){}t.queue=[],t.version=2;for(var r=["Event","PageView","Exception","Trace","DependencyData","Metric","PageViewPerformance"];r.length;)n("track"+r.pop());n("startTrackPage"),n("stopTrackPage");var s="Track"+r[0];if(n("start"+s),n("stop"+s),n("setAuthenticatedUserContext"),n("clearAuthenticatedUserContext"),n("flush"),!(!0===e.disableExceptionTracking||e.extensionConfig&&e.extensionConfig.ApplicationInsightsAnalytics&&!0===e.extensionConfig.ApplicationInsightsAnalytics.disableExceptionTracking)){n("_"+(r="onerror"));var o=a[r];a[r]=function(e,n,i,a,s){var c=o&&o(e,n,i,a,s);return!0!==c&&t["_"+r]({message:e,url:n,lineNumber:i,columnNumber:a,error:s}),c},e.autoExceptionInstrumented=!0}return t}(
+            {
+                instrumentationKey: this.applicationInsightsInstrumentationKey
+            }
+            );window[aiName]=aisdk,aisdk.queue&&0===aisdk.queue.length&&aisdk.trackPageView({});
+        }
+
+        // endregion
+
         var url = 'https://firestore.googleapis.com/v1/projects/';
         url += this.firebaseProjectId;
         url += '/databases/';
         url += this.firebaseDatabaseName;
         url += '/documents/media';
 
-        var options = {
+        options = {
             autoplay: this.autoplay,
             controls: this.controls,
             nativeControlsForTouch: this.nativeControlsForTouch,
@@ -116,6 +143,30 @@ Vue.component('stream-switch', {
             height: this.height,
             width: this.width
         };
+
+        if (this.applicationInsightsInstrumentationKey != '') {
+            options.plugins = {
+                appInsights: {
+                    'streamId': this.azureVideoChannelName.toLowerCase(), // Defaults to the video stream
+                    'metricsToTrack': [
+                        'playbackSummary',
+                        'loaded',
+                        'viewed',
+                        'ended',
+                        'playTime',
+                        'percentsPlayed',
+                        'play',
+                        'pause',
+                        'seek',
+                        'fullscreen',
+                        'error',
+                        'buffering',
+                        'bitrateQuality',
+                        'downloadInfo'
+                    ]
+                }
+            };
+        }
 
         var error = this.errorMessage;
         var audioChannelName = this.azureAudioChannelName;
