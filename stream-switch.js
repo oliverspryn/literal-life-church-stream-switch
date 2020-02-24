@@ -26,6 +26,10 @@ Vue.component('stream-switch', {
         offlineImage: {
             required: true,
             type: String
+        },
+        placeholderImage: {
+            required: true,
+            type: String
         }
     },
 
@@ -60,15 +64,23 @@ Vue.component('stream-switch', {
 
     methods: {
         selectedAudio: function() {
-            var audio = audioUrl + '(format=m3u8-aapl-v3)';
+            var playlist = {
+                image: this.placeholderImage,
+                title: this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase(),
+                sources: [{
+                    file: videoUrl + '(format=mpd-time-csf)'
+                }, {
+                    file: videoUrl + '(format=m3u8-aapl-v3)'
+                }]
+            };
             
             jwplayer('stream-switch-jw-player').setup({
-                'file': audio,
-                'aspectratio': '16:9',
-                'autostart': this.autoplay,
-                'controls': true,
-                'preload': 'metadata',
-                'primary': 'html5'
+                playlist: playlist,
+                aspectratio: '16:9',
+                autostart: this.autoplay,
+                controls: true,
+                preload: 'metadata',
+                primary: 'html5'
             });
 
             this.audioButtonBackgroundColor = '#CCCCCC';
@@ -76,15 +88,24 @@ Vue.component('stream-switch', {
         },
 
         selectedVideo: function() {
-            var video = videoUrl + '(format=m3u8-aapl-v3)';
+            var playlist = {
+                image: this.placeholderImage,
+                title: this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase(),
+                mediaId: this.azureVideoChannelName,
+                sources: [{
+                    file: videoUrl + '(format=mpd-time-csf)'
+                }, {
+                    file: videoUrl + '(format=m3u8-aapl-v3)'
+                }]
+            };
 
             jwplayer('stream-switch-jw-player').setup({
-                'file': video,
-                'aspectratio': '16:9',
-                'autostart': this.autoplay,
-                'controls': true,
-                'preload': 'metadata',
-                'primary': 'html5'
+                playlist: playlist,
+                aspectratio: '16:9',
+                autostart: this.autoplay,
+                controls: true,
+                preload: 'metadata',
+                primary: 'html5'
             });
 
             this.audioButtonBackgroundColor = 'transparent';
@@ -101,6 +122,7 @@ Vue.component('stream-switch', {
 
         var audioChannelName = this.azureAudioChannelName;
         var videoChannelName = this.azureVideoChannelName;
+        var vueThis = this;
 
         axios.get(url)
             .then(function (response) {
@@ -121,24 +143,15 @@ Vue.component('stream-switch', {
                     }
                 });
 
-                var video = videoUrl + '(format=m3u8-aapl-v3)';
-
-                this.showSwitcherControls = true;
-
-                jwplayer('stream-switch-jw-player').setup({
-                    'file': video,
-                    'aspectratio': '16:9',
-                    'autostart': this.autoplay,
-                    'controls': true,
-                    'preload': 'metadata',
-                    'primary': 'html5'
-                });
+                vueThis.showSwitcherControls = true;
+                vueThis.showVideoPlayer = true;
+                vueThis.selectedVideo();
             })
             .catch(function () {
-                this.showSwitcherControls = false;
-                this.showVideoPlayer = false;
+                vueThis.showSwitcherControls = false;
+                vueThis.showVideoPlayer = false;
             });
     },
     
-    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><video v-if="showVideoPlayer" id="stream-switch-jw-player" /><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
+    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><video id="stream-switch-jw-player" /><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
 });
