@@ -27,6 +27,10 @@ Vue.component('stream-switch', {
             required: true,
             type: String
         },
+        organizationName: {
+            required: true,
+            type: String
+        },
         placeholderImage: {
             required: true,
             type: String
@@ -64,9 +68,13 @@ Vue.component('stream-switch', {
 
     methods: {
         selectedAudio: function() {
+            var title = this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase();
+            title += " Stream from " + this.organizationName;
+
             var playlist = {
                 image: this.placeholderImage,
-                title: this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase(),
+                mediaId: this.azureVideoChannelName,
+                title:title ,
                 sources: [{
                     file: videoUrl + '(format=mpd-time-csf).mpd'
                 }, {
@@ -78,8 +86,6 @@ Vue.component('stream-switch', {
                 aspectratio: '16:9',
                 autostart: this.autoplay,
                 controls: true,
-                displaydescription: false,
-                displaytitle: false,
                 playlist: playlist,
                 preload: 'metadata',
                 primary: 'html5'
@@ -90,10 +96,13 @@ Vue.component('stream-switch', {
         },
 
         selectedVideo: function() {
+            var title = this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase();
+            title += " Stream from " + this.organizationName;
+
             var playlist = {
                 image: this.placeholderImage,
-                title: this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase(),
                 mediaId: this.azureVideoChannelName,
+                title: title,
                 sources: [{
                     file: videoUrl + '(format=mpd-time-csf).mpd'
                 }, {
@@ -105,8 +114,6 @@ Vue.component('stream-switch', {
                 aspectratio: '16:9',
                 autostart: this.autoplay,
                 controls: true,
-                displaydescription: false,
-                displaytitle: false,
                 playlist: playlist,
                 preload: 'metadata',
                 primary: 'html5'
