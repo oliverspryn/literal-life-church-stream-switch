@@ -68,17 +68,19 @@ Vue.component('stream-switch', {
                 image: this.placeholderImage,
                 title: this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase(),
                 sources: [{
-                    file: videoUrl + '(format=mpd-time-csf)'
+                    file: videoUrl + '(format=mpd-time-csf).mpd'
                 }, {
-                    file: videoUrl + '(format=m3u8-aapl-v3)'
+                    file: videoUrl + '(format=m3u8-aapl-v3).m3u8'
                 }]
             };
             
             jwplayer('stream-switch-jw-player').setup({
-                playlist: playlist,
                 aspectratio: '16:9',
                 autostart: this.autoplay,
                 controls: true,
+                displaydescription: false,
+                displaytitle: false,
+                playlist: playlist,
                 preload: 'metadata',
                 primary: 'html5'
             });
@@ -93,17 +95,19 @@ Vue.component('stream-switch', {
                 title: this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase(),
                 mediaId: this.azureVideoChannelName,
                 sources: [{
-                    file: videoUrl + '(format=mpd-time-csf)'
+                    file: videoUrl + '(format=mpd-time-csf).mpd'
                 }, {
-                    file: videoUrl + '(format=m3u8-aapl-v3)'
+                    file: videoUrl + '(format=m3u8-aapl-v3).m3u8'
                 }]
             };
 
             jwplayer('stream-switch-jw-player').setup({
-                playlist: playlist,
                 aspectratio: '16:9',
                 autostart: this.autoplay,
                 controls: true,
+                displaydescription: false,
+                displaytitle: false,
+                playlist: playlist,
                 preload: 'metadata',
                 primary: 'html5'
             });
