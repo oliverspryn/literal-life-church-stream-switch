@@ -81,11 +81,11 @@ Vue.component('stream-switch', {
             var playlist = {
                 image: this.placeholderImage,
                 mediaId: this.azureVideoChannelName,
-                title:title ,
+                title: title ,
                 sources: [{
-                    file: videoUrl + '(format=mpd-time-csf).mpd'
+                    file: audioUrl + '(format=mpd-time-csf).mpd'
                 }, {
-                    file: videoUrl + '(format=m3u8-aapl-v3).m3u8'
+                    file: audioUrl + '(format=m3u8-aapl-v3).m3u8'
                 }]
             };
             
