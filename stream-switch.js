@@ -56,6 +56,13 @@ Vue.component('stream-switch', {
             }
         },
 
+        playerStyle: function() {
+            return {
+                height: this.showVideoPlayer ? 'auto' : '0',
+                visibility: this.showVideoPlayer ? 'visible' : 'hidden'
+            }
+        },
+
         videoStyles: function() {
             return {
                 backgroundColor: this.videoButtonBackgroundColor,
@@ -69,7 +76,7 @@ Vue.component('stream-switch', {
     methods: {
         selectedAudio: function() {
             var title = this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase();
-            title += " Stream from " + this.organizationName;
+            title = title + " Stream from " + this.organizationName;
 
             var playlist = {
                 image: this.placeholderImage,
@@ -97,7 +104,7 @@ Vue.component('stream-switch', {
 
         selectedVideo: function() {
             var title = this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase();
-            title += " Stream from " + this.organizationName;
+            title = title + " Stream from " + this.organizationName;
 
             var playlist = {
                 image: this.placeholderImage,
@@ -133,11 +140,11 @@ Vue.component('stream-switch', {
 
         var audioChannelName = this.azureAudioChannelName;
         var videoChannelName = this.azureVideoChannelName;
-        var vueThis = this;
+        var vm = this;
 
         axios.get(url)
             .then(function (response) {
-                if (response == null || response.data == null || response.data.documents == null) {S
+                if (response == null || response.data == null || response.data.documents == null) {
                     return;
                 }
 
@@ -154,15 +161,15 @@ Vue.component('stream-switch', {
                     }
                 });
 
-                vueThis.showSwitcherControls = true;
-                vueThis.showVideoPlayer = true;
-                vueThis.selectedVideo();
+                vm.showSwitcherControls = true;
+                vm.showVideoPlayer = true;
+                vm.selectedVideo();
             })
             .catch(function () {
-                vueThis.showSwitcherControls = false;
-                vueThis.showVideoPlayer = false;
+                vm.showSwitcherControls = false;
+                vm.showVideoPlayer = false;
             });
     },
     
-    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><video id="stream-switch-jw-player" /><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
+    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><div :style="playerStyle"><video id="stream-switch-jw-player" /></div><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
 });
