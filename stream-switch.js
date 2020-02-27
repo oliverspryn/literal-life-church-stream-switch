@@ -95,7 +95,10 @@ Vue.component('stream-switch', {
                 controls: true,
                 playlist: playlist,
                 preload: 'metadata',
-                primary: 'html5'
+                primary: 'html5',
+                ga: {
+                    label: "mediaid"
+                }
             });
 
             this.audioButtonBackgroundColor = '#CCCCCC';
@@ -123,7 +126,10 @@ Vue.component('stream-switch', {
                 controls: true,
                 playlist: playlist,
                 preload: 'metadata',
-                primary: 'html5'
+                primary: 'html5',
+                ga: {
+                    label: "mediaid"
+                }
             });
 
             this.audioButtonBackgroundColor = 'transparent';
