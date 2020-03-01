@@ -80,8 +80,8 @@ Vue.component('stream-switch', {
 
             var playlist = {
                 image: this.placeholderImage,
-                mediaId: this.azureVideoChannelName,
-                title: title ,
+                mediaid: this.azureVideoChannelName,
+                title: title,
                 sources: [{
                     file: audioUrl + '(format=mpd-time-csf).mpd'
                 }, {
@@ -111,7 +111,7 @@ Vue.component('stream-switch', {
 
             var playlist = {
                 image: this.placeholderImage,
-                mediaId: this.azureVideoChannelName,
+                mediaid: this.azureVideoChannelName,
                 title: title,
                 sources: [{
                     file: videoUrl + '(format=mpd-time-csf).mpd'
