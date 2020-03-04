@@ -100,6 +100,10 @@ Vue.component('stream-switch', {
                 }
             });
 
+            jwplayer().on('error', function(event) {
+                ga('send', 'event', 'JW Player Events', 'Errors', event.code);
+            });
+
             this.audioButtonBackgroundColor = '#CCCCCC';
             this.videoButtonBackgroundColor = 'transparent';
         },
@@ -129,6 +133,10 @@ Vue.component('stream-switch', {
                 ga: {
                     label: "mediaid"
                 }
+            });
+
+            jwplayer().on('error', function(event) {
+                ga('send', 'event', 'JW Player Events', 'Errors', event.code);
             });
 
             this.audioButtonBackgroundColor = 'transparent';
