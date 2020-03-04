@@ -1,6 +1,3 @@
-var audioUrl = '';
-var videoUrl = '';
-
 Vue.component('stream-switch', {
     props: {
         autoplay: {
@@ -40,9 +37,11 @@ Vue.component('stream-switch', {
     data() {
         return {
             audioButtonBackgroundColor: 'transparent',
+            audioUrl: '',
             showSwitcherControls: false,
             showVideoPlayer: false,
-            videoButtonBackgroundColor: '#CCCCCC'
+            videoButtonBackgroundColor: '#CCCCCC',
+            videoUrl: ''
         }
     },
 
@@ -83,9 +82,9 @@ Vue.component('stream-switch', {
                 mediaId: this.azureVideoChannelName,
                 title: title ,
                 sources: [{
-                    file: audioUrl + '(format=mpd-time-csf).mpd'
+                    file: this.audioUrl + '(format=mpd-time-csf).mpd'
                 }, {
-                    file: audioUrl + '(format=m3u8-aapl-v3).m3u8'
+                    file: this.audioUrl + '(format=m3u8-aapl-v3).m3u8'
                 }]
             };
             
@@ -111,9 +110,9 @@ Vue.component('stream-switch', {
                 mediaId: this.azureVideoChannelName,
                 title: title,
                 sources: [{
-                    file: videoUrl + '(format=mpd-time-csf).mpd'
+                    file: this.videoUrl + '(format=mpd-time-csf).mpd'
                 }, {
-                    file: videoUrl + '(format=m3u8-aapl-v3).m3u8'
+                    file: this.videoUrl + '(format=m3u8-aapl-v3).m3u8'
                 }]
             };
 
@@ -153,11 +152,11 @@ Vue.component('stream-switch', {
                     var url = document.fields['url'].stringValue;
 
                     if (name.toLowerCase() == audioChannelName.toLowerCase()) {
-                        audioUrl = url;
+                        vm.audioUrl = url;
                     }
 
                     if (name.toLowerCase() == videoChannelName.toLowerCase()) {
-                        videoUrl = url;
+                        vm.videoUrl = url;
                     }
                 });
 
@@ -171,5 +170,5 @@ Vue.component('stream-switch', {
             });
     },
     
-    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><div :style="playerStyle"><video id="stream-switch-jw-player" /></div><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
+    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><div :style="playerStyle"><video id="stream-switch-jw-player" /></div><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;" v-if="audioUrl != \'\' && videoUrl != \'\'"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
 });
