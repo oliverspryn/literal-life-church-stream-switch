@@ -75,11 +75,11 @@ Vue.component('stream-switch', {
     methods: {
         selectedAudio: function() {
             var title = this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase();
-            title = title + " Stream from " + this.organizationName;
+            title = title + ' Stream from ' + this.organizationName;
 
             var playlist = {
                 image: this.placeholderImage,
-                mediaid: this.azureVideoChannelName,
+                mediaid: this.azureAudioChannelName,
                 title: title,
                 sources: [{
                     file: this.audioUrl + '(format=mpd-time-csf).mpd'
@@ -96,7 +96,7 @@ Vue.component('stream-switch', {
                 preload: 'metadata',
                 primary: 'html5',
                 ga: {
-                    label: "mediaid"
+                    label: 'mediaid'
                 }
             });
 
@@ -110,7 +110,7 @@ Vue.component('stream-switch', {
 
         selectedVideo: function() {
             var title = this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase();
-            title = title + " Stream from " + this.organizationName;
+            title = title + ' Stream from ' + this.organizationName;
 
             var playlist = {
                 image: this.placeholderImage,
@@ -131,7 +131,7 @@ Vue.component('stream-switch', {
                 preload: 'metadata',
                 primary: 'html5',
                 ga: {
-                    label: "mediaid"
+                    label: 'mediaid'
                 }
             });
 
