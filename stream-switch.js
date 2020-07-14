@@ -1,10 +1,24 @@
-Vue.component('stream-switch', {
+/*global axios, ga, jwplayer, Vue*/
+
+Vue.component("stream-switch", {
     props: {
         autoplay: {
             default: true,
             type: Boolean
         },
+        azureAudioChannelLabel: {
+            required: true,
+            type: String
+        },
         azureAudioChannelName: {
+            required: true,
+            type: String
+        },
+        azureStreamingEndpointName: {
+            required: true,
+            type: String
+        },
+        azureVideoChannelLabel: {
             required: true,
             type: String
         },
@@ -12,11 +26,7 @@ Vue.component('stream-switch', {
             required: true,
             type: String
         },
-        firebaseDatabaseName: {
-            default: '(default)',
-            type: String
-        },
-        firebaseProjectId: {
+        liveStreamingApiHost: {
             required: true,
             type: String
         },
@@ -36,12 +46,12 @@ Vue.component('stream-switch', {
 
     data() {
         return {
-            audioButtonBackgroundColor: 'transparent',
-            audioUrl: '',
+            audioButtonBackgroundColor: "transparent",
+            audioUrls: { dash: "", hls: "" },
             showSwitcherControls: false,
             showVideoPlayer: false,
-            videoButtonBackgroundColor: '#CCCCCC',
-            videoUrl: ''
+            videoButtonBackgroundColor: "#CCCCCC",
+            videoUrls: { dash: "", hls: "" }
         }
     },
 
@@ -49,140 +59,161 @@ Vue.component('stream-switch', {
         audioStyles: function() {
             return {
                 backgroundColor: this.audioButtonBackgroundColor,
-                cursor: 'pointer',
-                display: 'inline-block',
-                padding: '10px'
+                cursor: "pointer",
+                display: "inline-block",
+                padding: "10px"
             }
         },
 
         playerStyle: function() {
             return {
-                height: this.showVideoPlayer ? 'auto' : '0',
-                visibility: this.showVideoPlayer ? 'visible' : 'hidden'
+                height: this.showVideoPlayer ? "auto" : "0",
+                visibility: this.showVideoPlayer ? "visible" : "hidden"
             }
         },
 
         videoStyles: function() {
             return {
                 backgroundColor: this.videoButtonBackgroundColor,
-                cursor: 'pointer',
-                display: 'inline-block',
-                padding: '10px'
+                cursor: "pointer",
+                display: "inline-block",
+                padding: "10px"
             }
         }
     },
 
     methods: {
-        selectedAudio: function() {
-            var title = this.azureAudioChannelName.charAt(0).toUpperCase() + this.azureAudioChannelName.slice(1).toLowerCase();
-            title = title + ' Stream from ' + this.organizationName;
+        generateIngestUrl: function() {
+            var events = [];
 
-            var playlist = {
+            if (this.azureAudioChannelName != null && this.azureAudioChannelName != undefined && this.azureAudioChannelName.trim() != "") {
+                events.push(this.azureAudioChannelName.trim());
+            }
+
+            if (this.azureVideoChannelName != null && this.azureVideoChannelName != undefined && this.azureVideoChannelName.trim() != "") {
+                events.push(this.azureVideoChannelName.trim());
+            }
+
+            var url = "https://";
+            url += this.liveStreamingApiHost;
+            url += "/api/v1/viewer/locators?endpoint=";
+            url += this.azureStreamingEndpointName;
+            url += "&events=";
+            url += events.join();
+
+            return url;
+        },
+
+        generatePlaylist: function(channelName, channelLabel, urls) {
+            var dashUrl = urls.dash;
+            var hlsUrl = urls.hls;
+            var sourceUrls = [];
+
+            if (dashUrl != null && dashUrl != undefined && dashUrl.trim() != "") {
+                sourceUrls.push({ file: dashUrl });
+            }
+
+            if (hlsUrl != null && hlsUrl != undefined && hlsUrl.trim() != "") {
+                sourceUrls.push({ file: hlsUrl });
+            }
+
+            return {
                 image: this.placeholderImage,
-                mediaid: this.azureAudioChannelName,
-                title: title,
-                sources: [{
-                    file: this.audioUrl + '(format=mpd-time-csf).mpd'
-                }, {
-                    file: this.audioUrl + '(format=m3u8-aapl-v3).m3u8'
-                }]
+                mediaid: channelName,
+                title: channelLabel + " Stream from " + this.organizationName,
+                sources: sourceUrls
             };
-            
-            jwplayer('stream-switch-jw-player').setup({
-                aspectratio: '16:9',
+        },
+
+        initializeJwPlayer: function(playlist) {
+            jwplayer("stream-switch-jw-player").setup({
+                aspectratio: "16:9",
                 autostart: this.autoplay,
                 controls: true,
                 playlist: playlist,
-                preload: 'metadata',
-                primary: 'html5',
+                preload: "metadata",
+                primary: "html5",
                 ga: {
-                    label: 'mediaid'
+                    label: "mediaid"
                 }
             });
 
-            jwplayer().on('error', function(event) {
-                ga('send', 'event', 'JW Player Events', 'Error', 'Code', event.code);
+            jwplayer().on("error", function(event) {
+                ga("send", "event", "JW Player Events", "Error", "Code", event.code);
             });
+        },
 
-            this.audioButtonBackgroundColor = '#CCCCCC';
-            this.videoButtonBackgroundColor = 'transparent';
+        selectedAudio: function() {
+            var playlist = this.generatePlaylist(
+                this.azureAudioChannelName,
+                this.azureAudioChannelLabel,
+                this.audioUrls
+            )
+            
+            this.initializeJwPlayer(playlist);
+            this.audioButtonBackgroundColor = "#CCCCCC";
+            this.videoButtonBackgroundColor = "transparent";
         },
 
         selectedVideo: function() {
-            var title = this.azureVideoChannelName.charAt(0).toUpperCase() + this.azureVideoChannelName.slice(1).toLowerCase();
-            title = title + ' Stream from ' + this.organizationName;
-
-            var playlist = {
-                image: this.placeholderImage,
-                mediaid: this.azureVideoChannelName,
-                title: title,
-                sources: [{
-                    file: this.videoUrl + '(format=mpd-time-csf).mpd'
-                }, {
-                    file: this.videoUrl + '(format=m3u8-aapl-v3).m3u8'
-                }]
-            };
-
-            jwplayer('stream-switch-jw-player').setup({
-                aspectratio: '16:9',
-                autostart: this.autoplay,
-                controls: true,
-                playlist: playlist,
-                preload: 'metadata',
-                primary: 'html5',
-                ga: {
-                    label: 'mediaid'
-                }
-            });
-
-            jwplayer().on('error', function(event) {
-                ga('send', 'event', 'JW Player Events', 'Error', 'Code', event.code);
-            });
-
-            this.audioButtonBackgroundColor = 'transparent';
-            this.videoButtonBackgroundColor = '#CCCCCC';
+            var playlist = this.generatePlaylist(
+                this.azureVideoChannelName,
+                this.azureVideoChannelLabel,
+                this.videoUrls
+            )
+            
+            this.initializeJwPlayer(playlist);
+            this.audioButtonBackgroundColor = "transparent";
+            this.videoButtonBackgroundColor = "#CCCCCC";
         }
     },
 
     mounted: function () {
-        var url = 'https://firestore.googleapis.com/v1/projects/';
-        url += this.firebaseProjectId;
-        url += '/databases/';
-        url += this.firebaseDatabaseName;
-        url += '/documents/media';
-
-        var audioChannelName = this.azureAudioChannelName;
-        var videoChannelName = this.azureVideoChannelName;
+        var url = this.generateIngestUrl();
         var vm = this;
+
+        this.showSwitcherControls = false;
+        this.showVideoPlayer = false;
 
         axios.get(url)
             .then(function (response) {
-                if (response == null || response.data == null || response.data.documents == null) {
-                    return;
-                }
+                if (response == null || response.events == null) return;
+                var hasAudioUrl = false;
+                var hasVideoUrl = false;
 
-                response.data.documents.forEach(function (document) {
-                    var name = document.fields['name'].stringValue;
-                    var url = document.fields['url'].stringValue;
+                response.events.forEach(function (liveEvent) {
+                    if (!liveEvent.isLive) return;
 
-                    if (name.toLowerCase() == audioChannelName.toLowerCase()) {
-                        vm.audioUrl = url;
-                    }
+                    liveEvent.locators.forEach(function (locator) {
+                        if (liveEvent.name.toLowerCase() == vm.azureAudioChannelName.toLowerCase()) {
+                            hasAudioUrl = true;
+                            if (locator.type.toLowerCase() == "dash") vm.audioUrls.dash = locator.url;
+                            if (locator.type.toLowerCase() == "hls") vm.audioUrls.hls = locator.url;
+                        }
 
-                    if (name.toLowerCase() == videoChannelName.toLowerCase()) {
-                        vm.videoUrl = url;
-                    }
+                        if (liveEvent.name.toLowerCase() == vm.azureVideoChannelName.toLowerCase()) {
+                            hasVideoUrl = true;
+                            if (locator.type.toLowerCase() == "dash") vm.videoUrls.dash = locator.url;
+                            if (locator.type.toLowerCase() == "hls") vm.videoUrls.hls = locator.url;
+                        }
+                    });
                 });
 
-                vm.showSwitcherControls = true;
-                vm.showVideoPlayer = true;
-                vm.selectedVideo();
+                if (!hasAudioUrl && !hasVideoUrl) return;
+
+                vm.showSwitcherControls = response.isAllLive;
+                vm.showVideoPlayer = response.isAnyLive;
+                
+                if (hasVideoUrl) {
+                    vm.selectedVideo();
+                } else {
+                    vm.selectedAudio();
+                }
             })
             .catch(function () {
-                vm.showSwitcherControls = false;
-                vm.showVideoPlayer = false;
+                
             });
     },
     
-    template: '<div align="center"><img v-if="!showVideoPlayer" :src="offlineImage" /><div :style="playerStyle"><video id="stream-switch-jw-player" /></div><div v-if="showSwitcherControls" align="center"><ul style="margin: 10px 0 0 0; padding: 0;" v-if="audioUrl != \'\' && videoUrl != \'\'"><li @click="selectedVideo" :style="videoStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png" width="40"><span style="display: block;">{{ azureVideoChannelName.charAt(0).toUpperCase() + azureVideoChannelName.slice(1).toLowerCase() }}</span></li><li @click="selectedAudio" :style="audioStyles"><img src="https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png" width="40"><span style="display: block;">{{ azureAudioChannelName.charAt(0).toUpperCase() + azureAudioChannelName.slice(1).toLowerCase() }}</span></li></ul></div></div>'
+    template: "<div align=\"center\"><img v-if=\"!showVideoPlayer\" :src=\"offlineImage\" /><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div v-if=\"showSwitcherControls\" align=\"center\"><ul style=\"margin: 10px 0 0 0; padding: 0;\" v-if=\"audioUrl != \'\' && videoUrls != \'\'\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png\" width=\"40\"><span style=\"display: block;\">{{ azureVideoChannelLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png\" width=\"40\"><span style=\"display: block;\">{{ azureAudioChannelLabel }}</span></li></ul></div></div>"
 });
