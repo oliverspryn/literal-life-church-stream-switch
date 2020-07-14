@@ -86,11 +86,11 @@ Vue.component("stream-switch", {
         generateIngestUrl: function() {
             var events = [];
 
-            if (this.azureAudioChannelName != null && this.azureAudioChannelName != undefined && this.azureAudioChannelName.trim() != "") {
+            if (this.azureAudioChannelName !== null && this.azureAudioChannelName.trim() !== "") {
                 events.push(this.azureAudioChannelName.trim());
             }
 
-            if (this.azureVideoChannelName != null && this.azureVideoChannelName != undefined && this.azureVideoChannelName.trim() != "") {
+            if (this.azureVideoChannelName !== null && this.azureVideoChannelName.trim() !== "") {
                 events.push(this.azureVideoChannelName.trim());
             }
 
@@ -109,11 +109,11 @@ Vue.component("stream-switch", {
             var hlsUrl = urls.hls;
             var sourceUrls = [];
 
-            if (dashUrl != null && dashUrl != undefined && dashUrl.trim() != "") {
+            if (dashUrl !== null && dashUrl.trim() !== "") {
                 sourceUrls.push({ file: dashUrl });
             }
 
-            if (hlsUrl != null && hlsUrl != undefined && hlsUrl.trim() != "") {
+            if (hlsUrl !== null && hlsUrl.trim() !== "") {
                 sourceUrls.push({ file: hlsUrl });
             }
 
@@ -177,32 +177,39 @@ Vue.component("stream-switch", {
 
         axios.get(url)
             .then(function (response) {
-                if (response == null || response.events == null) return;
+                if (response === null || response.data === null || response.data.events === null) {
+                    return;
+                }
+                
                 var hasAudioUrl = false;
                 var hasVideoUrl = false;
 
-                response.events.forEach(function (liveEvent) {
-                    if (!liveEvent.isLive) return;
+                response.data.events.forEach(function (liveEvent) {
+                    if (!liveEvent.isLive) {
+                        return;
+                    }
 
                     liveEvent.locators.forEach(function (locator) {
-                        if (liveEvent.name.toLowerCase() == vm.azureAudioChannelName.toLowerCase()) {
+                        if (liveEvent.name.toLowerCase() === vm.azureAudioChannelName.toLowerCase()) {
                             hasAudioUrl = true;
-                            if (locator.type.toLowerCase() == "dash") vm.audioUrls.dash = locator.url;
-                            if (locator.type.toLowerCase() == "hls") vm.audioUrls.hls = locator.url;
+                            if (locator.type.toLowerCase() === "dash") vm.audioUrls.dash = locator.url;
+                            if (locator.type.toLowerCase() === "hls") vm.audioUrls.hls = locator.url;
                         }
 
-                        if (liveEvent.name.toLowerCase() == vm.azureVideoChannelName.toLowerCase()) {
+                        if (liveEvent.name.toLowerCase() === vm.azureVideoChannelName.toLowerCase()) {
                             hasVideoUrl = true;
-                            if (locator.type.toLowerCase() == "dash") vm.videoUrls.dash = locator.url;
-                            if (locator.type.toLowerCase() == "hls") vm.videoUrls.hls = locator.url;
+                            if (locator.type.toLowerCase() === "dash") vm.videoUrls.dash = locator.url;
+                            if (locator.type.toLowerCase() === "hls") vm.videoUrls.hls = locator.url;
                         }
                     });
                 });
 
-                if (!hasAudioUrl && !hasVideoUrl) return;
+                if (!hasAudioUrl && !hasVideoUrl) {
+                    return;
+                }
 
-                vm.showSwitcherControls = response.isAllLive;
-                vm.showVideoPlayer = response.isAnyLive;
+                vm.showSwitcherControls = response.data.isAllLive;
+                vm.showVideoPlayer = response.data.isAnyLive;
                 
                 if (hasVideoUrl) {
                     vm.selectedVideo();
