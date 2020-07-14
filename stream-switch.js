@@ -56,7 +56,7 @@ Vue.component("stream-switch", {
     },
 
     computed: {
-        audioStyles: function() {
+        audioStyles: function () {
             return {
                 backgroundColor: this.audioButtonBackgroundColor,
                 cursor: "pointer",
@@ -65,14 +65,14 @@ Vue.component("stream-switch", {
             }
         },
 
-        playerStyle: function() {
+        playerStyle: function () {
             return {
                 height: this.showVideoPlayer ? "auto" : "0",
                 visibility: this.showVideoPlayer ? "visible" : "hidden"
             }
         },
 
-        videoStyles: function() {
+        videoStyles: function () {
             return {
                 backgroundColor: this.videoButtonBackgroundColor,
                 cursor: "pointer",
@@ -83,7 +83,7 @@ Vue.component("stream-switch", {
     },
 
     methods: {
-        generateIngestUrl: function() {
+        generateIngestUrl: function () {
             var events = [];
 
             if (this.azureAudioChannelName !== null && this.azureAudioChannelName.trim() !== "") {
@@ -104,7 +104,7 @@ Vue.component("stream-switch", {
             return url;
         },
 
-        generatePlaylist: function(channelName, channelLabel, urls) {
+        generatePlaylist: function (channelName, channelLabel, urls) {
             var dashUrl = urls.dash;
             var hlsUrl = urls.hls;
             var sourceUrls = [];
@@ -125,7 +125,7 @@ Vue.component("stream-switch", {
             };
         },
 
-        initializeJwPlayer: function(playlist) {
+        initializeJwPlayer: function (playlist) {
             jwplayer("stream-switch-jw-player").setup({
                 aspectratio: "16:9",
                 autostart: this.autoplay,
@@ -138,30 +138,30 @@ Vue.component("stream-switch", {
                 }
             });
 
-            jwplayer().on("error", function(event) {
+            jwplayer().on("error", function (event) {
                 ga("send", "event", "JW Player Events", "Error", "Code", event.code);
             });
         },
 
-        selectedAudio: function() {
+        selectedAudio: function () {
             var playlist = this.generatePlaylist(
                 this.azureAudioChannelName,
                 this.azureAudioChannelLabel,
                 this.audioUrls
-            )
-            
+            );
+
             this.initializeJwPlayer(playlist);
             this.audioButtonBackgroundColor = "#CCCCCC";
             this.videoButtonBackgroundColor = "transparent";
         },
 
-        selectedVideo: function() {
+        selectedVideo: function () {
             var playlist = this.generatePlaylist(
                 this.azureVideoChannelName,
                 this.azureVideoChannelLabel,
                 this.videoUrls
             )
-            
+
             this.initializeJwPlayer(playlist);
             this.audioButtonBackgroundColor = "transparent";
             this.videoButtonBackgroundColor = "#CCCCCC";
@@ -180,7 +180,7 @@ Vue.component("stream-switch", {
                 if (response === null || response.data === null || response.data.events === null) {
                     return;
                 }
-                
+
                 var hasAudioUrl = false;
                 var hasVideoUrl = false;
 
@@ -192,14 +192,26 @@ Vue.component("stream-switch", {
                     liveEvent.locators.forEach(function (locator) {
                         if (liveEvent.name.toLowerCase() === vm.azureAudioChannelName.toLowerCase()) {
                             hasAudioUrl = true;
-                            if (locator.type.toLowerCase() === "dash") vm.audioUrls.dash = locator.url;
-                            if (locator.type.toLowerCase() === "hls") vm.audioUrls.hls = locator.url;
+
+                            if (locator.type.toLowerCase() === "dash") {
+                                vm.audioUrls.dash = locator.url;
+                            }
+
+                            if (locator.type.toLowerCase() === "hls") {
+                                vm.audioUrls.hls = locator.url;
+                            }
                         }
 
                         if (liveEvent.name.toLowerCase() === vm.azureVideoChannelName.toLowerCase()) {
                             hasVideoUrl = true;
-                            if (locator.type.toLowerCase() === "dash") vm.videoUrls.dash = locator.url;
-                            if (locator.type.toLowerCase() === "hls") vm.videoUrls.hls = locator.url;
+
+                            if (locator.type.toLowerCase() === "dash") {
+                                vm.videoUrls.dash = locator.url;
+                            }
+
+                            if (locator.type.toLowerCase() === "hls") {
+                                vm.videoUrls.hls = locator.url;
+                            }
                         }
                     });
                 });
@@ -210,7 +222,7 @@ Vue.component("stream-switch", {
 
                 vm.showSwitcherControls = response.data.isAllLive;
                 vm.showVideoPlayer = response.data.isAnyLive;
-                
+
                 if (hasVideoUrl) {
                     vm.selectedVideo();
                 } else {
@@ -218,9 +230,9 @@ Vue.component("stream-switch", {
                 }
             })
             .catch(function () {
-                
+
             });
     },
-    
+
     template: "<div align=\"center\"><img v-if=\"!showVideoPlayer\" :src=\"offlineImage\" /><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div v-if=\"showSwitcherControls\" align=\"center\"><ul style=\"margin: 10px 0 0 0; padding: 0;\" v-if=\"audioUrl != \'\' && videoUrls != \'\'\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png\" width=\"40\"><span style=\"display: block;\">{{ azureVideoChannelLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png\" width=\"40\"><span style=\"display: block;\">{{ azureAudioChannelLabel }}</span></li></ul></div></div>"
 });
