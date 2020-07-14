@@ -160,7 +160,7 @@ Vue.component("stream-switch", {
                 this.azureVideoChannelName,
                 this.azureVideoChannelLabel,
                 this.videoUrls
-            )
+            );
 
             this.initializeJwPlayer(playlist);
             this.audioButtonBackgroundColor = "transparent";
