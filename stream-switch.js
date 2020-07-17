@@ -30,8 +30,12 @@ Vue.component("stream-switch", {
             required: true,
             type: String
         },
-        offlineImage: {
-            required: true,
+        loadingText: {
+            default: "Loading the live stream",
+            type: String
+        },
+        offlineText: {
+            default: "Live stream is currently offline",
             type: String
         },
         organizationName: {
@@ -48,11 +52,13 @@ Vue.component("stream-switch", {
         return {
             audioButtonBackgroundColor: "transparent",
             audioUrls: { dash: "", hls: "" },
+            dynamicMessage: "",
+            showSpinner: false,
             showSwitcherControls: false,
             showVideoPlayer: false,
             videoButtonBackgroundColor: "#CCCCCC",
             videoUrls: { dash: "", hls: "" }
-        }
+        };
     },
 
     computed: {
@@ -172,6 +178,8 @@ Vue.component("stream-switch", {
         var url = this.generateIngestUrl();
         var vm = this;
 
+        this.dynamicMessage = this.loadingText;
+        this.showSpinner = true;
         this.showSwitcherControls = false;
         this.showVideoPlayer = false;
 
@@ -216,7 +224,10 @@ Vue.component("stream-switch", {
                     });
                 });
 
+                vm.showSpinner = false;
+
                 if (!hasAudioUrl && !hasVideoUrl) {
+                    vm.dynamicMessage = vm.offlineText;
                     return;
                 }
 
@@ -230,9 +241,10 @@ Vue.component("stream-switch", {
                 }
             })
             .catch(function () {
-
+                vm.dynamicMessage = this.offlineText;
+                vm.showSpinner = false;
             });
     },
 
-    template: "<div align=\"center\"><img v-if=\"!showVideoPlayer\" :src=\"offlineImage\" /><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div v-if=\"showSwitcherControls\" align=\"center\"><ul style=\"margin: 10px 0 0 0; padding: 0;\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/video.png\" width=\"40\"><span style=\"display: block;\">{{ azureVideoChannelLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><img src=\"https://cdn.jsdelivr.net/gh/literal-life-church/stream-switch@latest/assets/audio.png\" width=\"40\"><span style=\"display: block;\">{{ azureAudioChannelLabel }}</span></li></ul></div></div>"
+    template: "<div align=\"center\"><div v-if=\"!showVideoPlayer\"><div style=\"float: left; position: relative;\"><img :src=\"placeholderImage\" /><div style=\"bottom: 0px; left: 0px; position: absolute; right: 0px; top: 0px;\"><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"></div><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"><div style=\"align-items: center; display: flex; height: 100%; justify-content: center; width: 100%;\"><div><i class=\"fa fa-spinner fa-pulse fa-3x fa-fw\" v-if=\"showSpinner\"></i><span class=\"sr-only\" v-if=\"showSpinner\">>Loading...</span><p style=\"font-weight: bold; font-size: 24px;\">{{ dynamicMessage }}</p></div></div></div></div></div></div><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div align=\"center\" v-if=\"showSwitcherControls\"><ul style=\"margin: 10px 0 0 0; padding: 0;\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><i aria-hidden=\"true\" class=\"fa fa-film\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureVideoChannelLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><i aria-hidden=\"true\" class=\"fa fa-volume-up\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureAudioChannelLabel }}</span></li></ul></div></div>"
 });
