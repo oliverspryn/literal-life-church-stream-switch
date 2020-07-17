@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Stream Switch</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- Your Google Analytics script here -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXX"></script>
@@ -18,17 +19,20 @@
     </script>
   </head>
   <body>
-    <div id="stream-switch">
-      <stream-switch
-        azure-audio-channel-label="Audio"
-        azure-audio-channel-name="audio"
-        azure-streaming-endpoint-name="default"
-        azure-video-channel-label="Video"
-        azure-video-channel-name="video"
-        live-streaming-api-host="live.literallife.church"
-        offline-image="https://res.cloudinary.com/literallifechurch/image/upload/w_1000,c_scale/streaming/offline.jpg"
-        organization-name="Literal Life Church"
-        placeholder-image="https://res.cloudinary.com/literallifechurch/image/upload/w_1000,c_scale/streaming/logo.jpg" />
+    <div style="height: 500px; width: 1000px;">
+      <div id="stream-switch">
+        <stream-switch
+          azure-audio-channel-label="Audio"
+          azure-audio-channel-name="audio"
+          azure-streaming-endpoint-name="default"
+          azure-video-channel-label="Video"
+          azure-video-channel-name="video"
+          live-streaming-api-host="live.literallife.church"
+          loading-text="Loading the live stream"
+          offline-text="Live stream is currently offline"
+          organization-name="Literal Life Church"
+          placeholder-image="https://place-hold.it/1000x500" />
+      </div>
     </div>
 
     <!-- Your JW Player script here -->
