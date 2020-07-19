@@ -220,7 +220,7 @@ Vue.component("stream-switch", {
                         vm.selectedAudio();
                     }
 
-                    if (vm.timer != null) {
+                    if (vm.timer !== null) {
                         clearInterval(vm.timer);
                     }
                 })
