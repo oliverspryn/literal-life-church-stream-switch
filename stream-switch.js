@@ -6,11 +6,11 @@ Vue.component("stream-switch", {
             default: true,
             type: Boolean
         },
-        azureAudioChannelLabel: {
+        azureAudioLiveEventLabel: {
             required: true,
             type: String
         },
-        azureAudioChannelName: {
+        azureAudioLiveEventName: {
             required: true,
             type: String
         },
@@ -18,11 +18,11 @@ Vue.component("stream-switch", {
             required: true,
             type: String
         },
-        azureVideoChannelLabel: {
+        azureVideoLiveEventLabel: {
             required: true,
             type: String
         },
-        azureVideoChannelName: {
+        azureVideoLiveEventName: {
             required: true,
             type: String
         },
@@ -97,12 +97,12 @@ Vue.component("stream-switch", {
         generateIngestUrl: function () {
             var events = [];
 
-            if (this.azureAudioChannelName !== null && this.azureAudioChannelName.trim() !== "") {
-                events.push(this.azureAudioChannelName.trim());
+            if (this.azureAudioLiveEventName !== null && this.azureAudioLiveEventName.trim() !== "") {
+                events.push(this.azureAudioLiveEventName.trim());
             }
 
-            if (this.azureVideoChannelName !== null && this.azureVideoChannelName.trim() !== "") {
-                events.push(this.azureVideoChannelName.trim());
+            if (this.azureVideoLiveEventName !== null && this.azureVideoLiveEventName.trim() !== "") {
+                events.push(this.azureVideoLiveEventName.trim());
             }
 
             var url = "https://";
@@ -115,7 +115,7 @@ Vue.component("stream-switch", {
             return url;
         },
 
-        generatePlaylist: function (channelName, channelLabel, urls) {
+        generatePlaylist: function (liveEventName, liveEventLabel, urls) {
             var dashUrl = urls.dash;
             var hlsUrl = urls.hls;
             var sourceUrls = [];
@@ -130,8 +130,8 @@ Vue.component("stream-switch", {
 
             return {
                 image: this.placeholderImage,
-                mediaid: channelName,
-                title: channelLabel + " Stream from " + this.organizationName,
+                mediaid: liveEventName,
+                title: liveEventLabel + " Stream from " + this.organizationName,
                 sources: sourceUrls
             };
         },
@@ -178,7 +178,7 @@ Vue.component("stream-switch", {
                         }
 
                         liveEvent.locators.forEach(function (locator) {
-                            if (liveEvent.name.toLowerCase() === vm.azureAudioChannelName.toLowerCase()) {
+                            if (liveEvent.name.toLowerCase() === vm.azureAudioLiveEventName.toLowerCase()) {
                                 hasAudioUrl = true;
 
                                 if (locator.type.toLowerCase() === "dash") {
@@ -190,7 +190,7 @@ Vue.component("stream-switch", {
                                 }
                             }
 
-                            if (liveEvent.name.toLowerCase() === vm.azureVideoChannelName.toLowerCase()) {
+                            if (liveEvent.name.toLowerCase() === vm.azureVideoLiveEventName.toLowerCase()) {
                                 hasVideoUrl = true;
 
                                 if (locator.type.toLowerCase() === "dash") {
@@ -232,8 +232,8 @@ Vue.component("stream-switch", {
 
         selectedAudio: function () {
             var playlist = this.generatePlaylist(
-                this.azureAudioChannelName,
-                this.azureAudioChannelLabel,
+                this.azureAudioLiveEventName,
+                this.azureAudioLiveEventLabel,
                 this.audioUrls
             );
 
@@ -244,8 +244,8 @@ Vue.component("stream-switch", {
 
         selectedVideo: function () {
             var playlist = this.generatePlaylist(
-                this.azureVideoChannelName,
-                this.azureVideoChannelLabel,
+                this.azureVideoLiveEventName,
+                this.azureVideoLiveEventLabel,
                 this.videoUrls
             );
 
@@ -264,5 +264,5 @@ Vue.component("stream-switch", {
         }
     },
 
-    template: "<div align=\"center\"><div style=\"clear: both; display: table; overflow: auto;\" v-if=\"!showVideoPlayer\"><div style=\"float: left; position: relative;\"><img :src=\"placeholderImage\" /><div style=\"bottom: 0px; left: 0px; position: absolute; right: 0px; top: 0px;\"><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"></div><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"><div style=\"align-items: center; display: flex; height: 100%; justify-content: center; width: 100%;\"><div><i class=\"fa fa-spinner fa-pulse fa-3x fa-fw\" v-if=\"showSpinner\"></i><span class=\"sr-only\" v-if=\"showSpinner\">>Loading...</span><p style=\"font-weight: bold; font-size: 24px;\">{{ dynamicMessage }}</p></div></div></div></div></div></div><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div align=\"center\" v-if=\"showSwitcherControls\"><ul style=\"margin: 10px 0 0 0; padding: 0;\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><i aria-hidden=\"true\" class=\"fa fa-film\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureVideoChannelLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><i aria-hidden=\"true\" class=\"fa fa-volume-up\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureAudioChannelLabel }}</span></li></ul></div></div>"
+    template: "<div align=\"center\"><div style=\"clear: both; display: table; overflow: auto;\" v-if=\"!showVideoPlayer\"><div style=\"float: left; position: relative;\"><img :src=\"placeholderImage\" /><div style=\"bottom: 0px; left: 0px; position: absolute; right: 0px; top: 0px;\"><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"></div><div style=\"height: 50%; max-height: 50%; min-height: 50%; width: 100%;\"><div style=\"align-items: center; display: flex; height: 100%; justify-content: center; width: 100%;\"><div><i class=\"fa fa-spinner fa-pulse fa-3x fa-fw\" v-if=\"showSpinner\"></i><span class=\"sr-only\" v-if=\"showSpinner\">>Loading...</span><p style=\"font-weight: bold; font-size: 24px;\">{{ dynamicMessage }}</p></div></div></div></div></div></div><div :style=\"playerStyle\"><video id=\"stream-switch-jw-player\" /></div><div align=\"center\" v-if=\"showSwitcherControls\"><ul style=\"margin: 10px 0 0 0; padding: 0;\"><li @click=\"selectedVideo\" :style=\"videoStyles\"><i aria-hidden=\"true\" class=\"fa fa-film\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureVideoLiveEventLabel }}</span></li><li @click=\"selectedAudio\" :style=\"audioStyles\"><i aria-hidden=\"true\" class=\"fa fa-volume-up\" style=\"font-size: 2em; padding-bottom: 8px;\"></i><span style=\"display: block;\">{{ azureAudioLiveEventLabel }}</span></li></ul></div></div>"
 });
