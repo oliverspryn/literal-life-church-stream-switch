@@ -1,5 +1,5 @@
 /*global Vue*/
 
 new Vue({
-    el: '#stream-switch'
+    el: "#stream-switch"
 });

@@ -73,14 +73,14 @@ Vue.component("stream-switch", {
                 cursor: "pointer",
                 display: "inline-block",
                 padding: "10px"
-            }
+            };
         },
 
         playerStyle: function () {
             return {
                 height: this.showVideoPlayer ? "auto" : "0",
                 visibility: this.showVideoPlayer ? "visible" : "hidden"
-            }
+            };
         },
 
         videoStyles: function () {
@@ -89,7 +89,7 @@ Vue.component("stream-switch", {
                 cursor: "pointer",
                 display: "inline-block",
                 padding: "10px"
-            }
+            };
         }
     },
 
