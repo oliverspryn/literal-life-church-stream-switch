@@ -1,5 +1,8 @@
 <div align="center">
-<h1>Stream Switch<br/><sub>View one or more live streaming events on Azure Media Services</sub></h1>
+<img src="./.docs/logo.png" width="128px" />
+<br>
+
+<h1>Stream Switch<br/><sub>View and switch between a video and audio live streaming event</sub></h1>
 
 [:one: API](https://github.com/literal-life-church/live-streaming-api/) |
 [:two: Controller](https://github.com/literal-life-church/live-streaming-controller/) |
@@ -9,7 +12,11 @@
 "Streamlining the process to get your events online."
 ```
 
-[![Stream Switch on jsDelivr](https://data.jsdelivr.com/v1/package/gh/literal-life-church/stream-switch/badge?style=rounded)](https://www.jsdelivr.com/package/gh/literal-life-church/stream-switch) [![Maintainability](https://api.codeclimate.com/v1/badges/08a58e3a16ff34529c2b/maintainability)](https://codeclimate.com/github/literal-life-church/stream-switch/maintainability) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/60311c0a572d46aeaca6215ee331c7a0)](https://www.codacy.com/gh/literal-life-church/stream-switch) [![Demo Available Online](https://img.shields.io/badge/Demo-Available%20Online-green?logo=vercel)](https://stream-switch.now.sh/) [![Stream Switch Releases](https://img.shields.io/github/v/release/literal-life-church/stream-switch?label=Releases)](https://github.com/literal-life-church/stream-switch/releases)
+[![Stream Switch on jsDelivr](https://data.jsdelivr.com/v1/package/gh/literal-life-church/stream-switch/badge?style=rounded)](https://www.jsdelivr.com/package/gh/literal-life-church/stream-switch)
+[![Maintainability](https://api.codeclimate.com/v1/badges/08a58e3a16ff34529c2b/maintainability)](https://codeclimate.com/github/literal-life-church/stream-switch/maintainability)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/60311c0a572d46aeaca6215ee331c7a0)](https://www.codacy.com/gh/literal-life-church/stream-switch)
+[![Demo Available Online](https://img.shields.io/badge/Demo-Available%20Online-green?logo=vercel)](https://stream-switch.now.sh/)
+[![Stream Switch Releases](https://img.shields.io/github/v/release/literal-life-church/stream-switch?label=Releases)](https://github.com/literal-life-church/stream-switch/releases)
 
 <hr />
 </div>
@@ -26,7 +33,13 @@ In production, an event broadcaster would use the Live Streaming Controller as a
 
 A viewer would then go to a website which has the Stream Switch installed to view the event. That application calls the `/locators` endpoint to fetch the streaming URLs from Azure to play inside of an HTML5 video player on the web. Since this endpoint intended for public consumption, it is the only endpoint in the API which is not authenticated.
 
-This portion of the application trio focuses on delivering the live streams to an audiance. The Stream Switch is designed to pull up to two live streams from the Live Streaming API, and whenever the events are online, display them in a JW Player video widget. This switching mechanism is intended to allow the viewer to watch the same event in two different ways, in one way as a video, and in another way as an audio-only stream to save on internet bandwidth usage. If the broadcaster is only streaming one of these events, such as the video event, and decided to not broadcast the audio-only version, then the switcher is smart enough to show only the available stream, and hide the button to view the offline audio stream.
+This portion of the application trio focuses on delivering the live streams to an audience. The Stream Switch is designed to pull up to two live streams from the Live Streaming API, and whenever the events are online, display them in a JW Player video widget. This switching mechanism is intended to allow the viewer to watch the same event in two different ways, in one way as a video, and in another way as an audio-only stream to save on internet bandwidth usage. If the broadcaster is only streaming one of these events, such as the video event, and decided not to broadcast the audio-only version, then the switcher is smart enough to show only the available stream, and hide the button to view the offline audio stream.
+
+---
+
+<div align="center">
+<img src="./.docs/icons/documentation.png" style="padding: 32px 16px 16px 16px;" width="128px" />
+</div>
 
 ## Installation
 
@@ -37,8 +50,8 @@ Whenever a website administrator is setting up the Stream Switch widget, there a
 This application is not able to run on its own, and requires a backend service to supply it with information.
 
 1.  Set up the Live Streaming API, per [the installation steps](https://github.com/literal-life-church/live-streaming-api#installation) detailed in that project. This API serves as the data source for providing the live event streaming URLs to the Stream Switch.
-2.  Create two live events on Azure Media services, one for a video stream and another for an audio (or low quality video) stream
-3.  Set up your video broadcasting software to simultaneously stream both a video and an audio (or low quality video) stream at the same time. [Wirecast](https://www.telestream.net/wirecast/) is an example of an application which is capable of that.
+2.  Create two live events on Azure Media services, one for a video stream and another for an audio (or low-quality video) stream
+3.  Set up your video broadcasting software to simultaneously stream both a video and an audio (or low-quality video) stream at the same time. [Wirecast](https://www.telestream.net/wirecast/) is an example of an application which is capable of that.
 
 ### Sign up for Third-Party Services
 
@@ -133,7 +146,7 @@ Whenever you install the Stream Switch in step 3, look for the strings in the **
 
 ## Customization
 
-Here is a collection of all of the properties on the Stream Switch which can be manipulated.
+Here is a collection of all of the properties on the Stream Switch which can be used to change its behavior.
 
 |             Property            |               Default              |   Type  |      Required      |                                                                                                                                            Description                                                                                                                                           |
 |:-------------------------------:|:----------------------------------:|:-------:|:------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -149,3 +162,53 @@ Here is a collection of all of the properties on the Stream Switch which can be 
 | `organization-name`             | &lt;empty&gt;                      | String  | :heavy_check_mark: | Used to build the video name for use as metadata on mobile devices and desktops when showing the currently playing media                                                                                                                                                                         |
 | `placeholder-image`             | &lt;empty&gt;                      | String  | :heavy_check_mark: | Background image used whenever loading the live streaming data or for whenever both streams are offline                                                                                                                                                                                          |
 | `polling-interval`              | `0`                                | Number  | :x:                | Polls the Live Streaming API every X seconds whenever the streams are offline to see whenever they come online and automatically loads the stream into the player. Values less than `15` are ignored and effectively disable the polling interval. Omitting this property also disables polling. |
+
+## Screenshots
+
+In addition to the [online demo](https://stream-switch.now.sh/), here are a few screenshots of the application at work.
+
+<div align="center">
+<a href="./.docs/screenshots/one-stream.png"><img align="top" alt="One Stream Example" src="./.docs/screenshots/one-stream.png" width="20%" /></a>
+<a href="./.docs/screenshots/two-streams.png"><img align="top" alt="Two Streams Example" src="./.docs/screenshots/two-streams.png" width="20%" /></a>
+<a href="./.docs/screenshots/loading.png"><img align="top" alt="Loading the live stream" src="./.docs/screenshots/loading.png" width="20%" /></a>
+<a href="./.docs/screenshots/offline.png"><img align="top" alt="Live stream is currently offline" src="./.docs/screenshots/offline.png" width="20%" /></a>
+
+<br><br>
+
+<img src="./.docs/icons/video.png" style="padding: 8px;" width="64px" />
+<img src="./.docs/icons/audio.png" style="padding: 8px;" width="64px" />
+</div>
+
+<br><br>
+
+---
+
+<div align="center">
+<br/><br/>
+<img src="./.docs/church.png" height="60px"/>
+<br/>
+<sub><i>This plugin was inspired by a need for the live streaming pipeline we use at <a href="https://www.literallife.church/" target="_blank">Literal Life Church</a></i></sub>
+<br><br>
+
+Contributors:<br><br>
+
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/0)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/0)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/1)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/1)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/2)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/2)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/3)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/3)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/4)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/4)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/5)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/5)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/6)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/6)
+[![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/7)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/7)
+
+
+<br/>
+<img alt="Language Count" src="https://img.shields.io/github/languages/count/literal-life-church/stream-switch?label=Languages"/>
+<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/literal-life-church/stream-switch?label=Contributors">
+<img alt="GitHub Code Size in Bytes" src="https://img.shields.io/github/languages/code-size/literal-life-church/stream-switch?label=Code%20Size">
+<img alt="GitHub Repository Size" src="https://img.shields.io/github/repo-size/literal-life-church/stream-switch?label=Repository%20Size">
+<br/>
+<br/>
+<img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/literal-life-church/stream-switch?label=Last%20Commit">
+<img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/literal-life-church/stream-switch?label=Release%20Date">
+</div>
