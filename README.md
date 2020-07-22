@@ -58,15 +58,19 @@ This application is not able to run on its own, and requires a backend service t
 [JW Player](https://www.jwplayer.com/) is the underlying technology which powers the viewer experience once at least one of your streams comes online. Analytics about your events is then captured via [Google Analytics](https://analytics.google.com/).
 
 1.  Go to the [JW Player](https://www.jwplayer.com/) website and sign up for an account. It is preferable to purchase one of their plans since detailed player analytics will NOT be captured on the free plan.
+
 2.  Inside of their account dashboard, create a video player and customize it to your liking
+
 3.  Once the video player is customized, save the embed URL. The URL looks something like this:
 
-    ```
+    ```text
     https://cdn.jwplayer.com/libraries/XXXXXXXXX.js
     ```
 
 4.  Go to the [Google Analytics](https://analytics.google.com/) and sign up for an account
+
 5.  Create an analytics Account, Property, and View, as desired for your website
+
 6.  Once the property is created, go to Admin &gt; Property &gt; Tracking Info &gt; Tracking Code. Make a note of this embed code. It looks something like this:
 
     ```html
@@ -94,6 +98,7 @@ Now that all of the pre-requisite steps are complete, the widget can be installe
 Whenever you install the Stream Switch in step 3, look for the strings in the **Find String** column and then use the corresponding value in the **Replace With** column. **Make sure to drop the `v` from the version number. For example, if the latest version of a library is `v3.0.0`, then use `3.0.0` instead.**
 
 1.  Open the webpage which will contain the video player in an edtior
+
 2.  In the `<head>` section of your webpage, add:
 
     ```html
@@ -200,7 +205,6 @@ Contributors:<br><br>
 [![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/5)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/5)
 [![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/6)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/6)
 [![](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/images/7)](https://sourcerer.io/fame/oliverspryn/literal-life-church/stream-switch/links/7)
-
 
 <br/>
 <img alt="Language Count" src="https://img.shields.io/github/languages/count/literal-life-church/stream-switch?label=Languages"/>
