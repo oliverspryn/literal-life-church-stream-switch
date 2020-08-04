@@ -215,4 +215,5 @@ Contributors:<br><br>
 <br/>
 <img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/literal-life-church/stream-switch?label=Last%20Commit">
 <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/literal-life-church/stream-switch?label=Release%20Date">
+<img alt="Hit Counter" src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fliteral-life-church%2Fstream-switch">
 </div>
